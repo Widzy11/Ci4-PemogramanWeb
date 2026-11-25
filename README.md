@@ -1,63 +1,61 @@
-# CodeIgniter 4 Application Starter
+# Sistem Penilaian Kepegawaian — CodeIgniter 4 CRUD
 
-## What is CodeIgniter?
+Proyek **Sistem Penilaian Kepegawaian** berbasis **CodeIgniter 4** yang mengikuti seluruh materi dari playlist YouTube:
+[Tutorial CodeIgniter 4 Terbaru 2025 | CRUD](https://youtube.com/playlist?list=PLzfy7lWzYumFlUqvfl0mQbTJ0VCTL7ghF&si=9BA_VtaQP9nwjHct)
 
-CodeIgniter is a PHP full-stack web framework that is light, fast, flexible and secure.
-More information can be found at the [official site](http://codeigniter.com).
+---
 
-This repository holds a composer-installable app starter.
-It has been built from the
-[development repository](https://github.com/codeigniter4/CodeIgniter4).
+## Checklist Kesesuaian Playlist YouTube (11 / 11 Video)
 
-More information about the plans for version 4 can be found in [the announcement](http://forum.codeigniter.com/thread-62615.html) on the forums.
+- [x] **Video 1** — [Tutorial Codeigniter 4 Untuk Pemula | Terbaru 2025 | CRUD Codeigniter 4](https://www.youtube.com/watch?v=Anb3akC65o4)
+  - Instalasi & konfigurasi CodeIgniter 4 (`v4.1.8`), `.env`, koneksi database MySQL (`latihan`), dan setup dasar routing/controller.
+- [x] **Video 2** — [Tutorial Codeigniter 4 Untuk Pemula | Terbaru 2025 | CRUD Codeigniter 4 #2](https://www.youtube.com/watch?v=TTmTarQqyPI)
+  - Layout dinamis dengan Bootstrap 5 (`app/Views/layout/template.php`, `app/Views/layout/navbar.php`) serta tampilan daftar data pegawai (`Read`).
+- [x] **Video 3** — [Tutorial Codeigniter 4 Untuk Pemula | Terbaru 2025 | CRUD Codeigniter 4 #3](https://www.youtube.com/watch?v=y34yxksvfgk)
+  - Fitur tambah data (`Create`) pegawai melalui `Crud::create` & `Crud::save` dengan flashdata notifikasi.
+- [x] **Video 4** — [Tutorial Codeigniter 4 Untuk Pemula | Terbaru 2025 | CRUD Codeigniter 4 #4](https://www.youtube.com/watch?v=6z3eSVsG5XY)
+  - Fitur ubah (`Update`) dan hapus (`Delete`) data pegawai (`Crud::edit`, `Crud::update`, `Crud::delete`).
+- [x] **Video 5** — [Tutorial Codeigniter 4 Untuk Pemula | Terbaru 2025 | From validation dan Relasi table #5](https://www.youtube.com/watch?v=0KuOVWLJGGk)
+  - Form validation (aturan `required`, `is_unique`, pesan error per field) dan relasi tabel `pegawai` ↔ `departemen` (`Departemen` CRUD + `JOIN` pada `CrudModel`).
+- [x] **Video 6** — [Tutorial Codeigniter 4 Untuk Pemula | Terbaru 2025 | Datables CRUD with Images & Files #6.1](https://www.youtube.com/watch?v=vkLI3fNvUsM)
+  - Integrasi DataTables (`#example`), halaman beranda/dashboard (`Home::index` dengan kartu jumlah Pegawai, Departemen, dan Penilaian), serta struktur upload foto.
+- [x] **Video 7** — [Tutorial Codeigniter 4 Untuk Pemula | Terbaru 2025 | CRUD with Images & Files #6.2](https://www.youtube.com/watch?v=LwsobRY92Io)
+  - Upload, preview, edit (hapus foto lama), dan delete foto profil pegawai di `public/img/` dengan validasi ukuran & tipe gambar (`JPG`, `JPEG`, `PNG`).
+- [x] **Video 8** — [Tutorial Codeigniter 4 Untuk Pemula | Terbaru 2025 | Search Autocomplete Files #7](https://www.youtube.com/watch?v=BqBemGU4o80)
+  - Modul **Data Penilaian** (`Penilaian` CRUD, tabel `penilaian`, badge `Sangat Baik`/`Cukup`/`Buruk`) dengan **Select2 dropdown search / autocomplete** untuk memilih pegawai serta AJAX search (`/crud/searchPegawai`, `/departemen/search`, `/crud/cekNomorPegawai`).
+- [x] **Video 9** — [Tutorial Codeigniter 4 Untuk Pemula 2025 #8-1 | Membuat Sistem Login & Registrasi](https://www.youtube.com/watch?v=tYxOjkrl1-8)
+  - Instalasi & migrasi **Myth/Auth** (`lonnieezell/myth-auth`), sistem login/registrasi/logout, filter autentikasi global (`login`), serta **multi-role & permission** (`admin` dan `pengawas` di `auth_groups`, `auth_permissions`, `auth_groups_permissions`, `auth_groups_users`).
+- [x] **Video 10** — [Tutorial Codeigniter 4 Untuk Pemula 2025 #8-2 | Membuat Sistem Login & Registrasi](https://www.youtube.com/watch?v=9iMlFpqVlwA)
+  - Modul **Data User** khusus admin (`Users` CRUD: tambah user password default `123456`, reset password, hapus user) serta menu dropdown user di navbar (**Profil**, **Ubah Password**, **Logout**) melalui controller `Profile`.
+- [x] **Video 11** — [Tutorial Codeigniter 4 Untuk Pemula 2025 #9 | Export to Word (CI4 + PhpWord)](https://www.youtube.com/watch?v=s1tGwYTCOz4)
+  - Instalasi **PhpWord** (`phpoffice/phpword`) dan fitur **Cetak Data / Export Word (`.docx`)** pada **Data Penilaian** (`/penilaian/exportWord`) maupun **Data Pegawai** (`/crud/exportWord` & `/crud/exportWord/{id}` lengkap dengan foto).
 
-The user guide corresponding to this version of the framework can be found
-[here](https://codeigniter4.github.io/userguide/).
+---
 
-## Installation & updates
+## Ringkasan Database (`latihan`)
 
-`composer create-project codeigniter4/appstarter` then `composer update` whenever
-there is a new release of the framework.
+- `pegawai` — 8 data pegawai lengkap (`PEG-001` s/d `PEG-008`) beserta foto di `public/img/pegawai_01.jpg` s/d `pegawai_08.jpg`.
+- `departemen` — 5 departemen (`Administrasi`, `Teknologi Informasi`, `Data & Informasi`, `Operasional`, `Pemasaran`).
+- `penilaian` — 8 data penilaian kinerja untuk seluruh pegawai.
+- Tabel Myth/Auth (`users`, `auth_groups`, `auth_permissions`, `auth_groups_permissions`, `auth_groups_users`, `auth_logins`, `auth_tokens`, `auth_activation_attempts`, `auth_reset_attempts`, `auth_users_permissions`).
 
-When updating, check the release notes to see if there are any changes you might need to apply
-to your `app` folder. The affected files can be copied or merged from
-`vendor/codeigniter4/framework/app`.
+### File Hasil Export Word
+- `exports/Data_Pegawai.docx`
+- `exports/Laporan_Penilaian_Pegawai.docx`
 
-## Setup
+---
 
-Copy `env` to `.env` and tailor for your app, specifically the baseURL
-and any database settings.
+## Cara Menjalankan
 
-## Important Change with index.php
+1. Pastikan layanan **MySQL** (XAMPP) aktif dan database `latihan` sudah tersedia.
+2. Jalankan server pengembangan CodeIgniter 4:
+   ```powershell
+   php spark serve
+   ```
+3. Buka di browser: `http://localhost:8080/`
 
-`index.php` is no longer in the root of the project! It has been moved inside the *public* folder,
-for better security and separation of components.
-
-This means that you should configure your web server to "point" to your project's *public* folder, and
-not to the project root. A better practice would be to configure a virtual host to point there. A poor practice would be to point your web server to the project root and expect to enter *public/...*, as the rest of your logic and the
-framework are exposed.
-
-**Please** read the user guide for a better explanation of how CI4 works!
-
-## Repository Management
-
-We use GitHub issues, in our main repository, to track **BUGS** and to track approved **DEVELOPMENT** work packages.
-We use our [forum](http://forum.codeigniter.com) to provide SUPPORT and to discuss
-FEATURE REQUESTS.
-
-This repository is a "distribution" one, built by our release preparation script.
-Problems with it can be raised on our forum, or as issues in the main repository.
-
-## Server Requirements
-
-PHP version 7.3 or higher is required, with the following extensions installed:
-
-- [intl](http://php.net/manual/en/intl.requirements.php)
-- [libcurl](http://php.net/manual/en/curl.requirements.php) if you plan to use the HTTP\CURLRequest library
-
-Additionally, make sure that the following extensions are enabled in your PHP:
-
-- json (enabled by default - don't turn it off)
-- [mbstring](http://php.net/manual/en/mbstring.installation.php)
-- [mysqlnd](http://php.net/manual/en/mysqlnd.install.php)
-- xml (enabled by default - don't turn it off)
+### Akun Login
+| Role | Username | Email | Password | Hak Akses |
+|---|---|---|---|---|
+| **Admin** | `admin` | `admin@example.com` | `Rahasia2025!` | Semua menu (`Home`, `Data Pegawai`, `Data Departemen`, `Data Penilaian` + Hapus, `Data User`, `Profil`, `Ubah Password`) |
+| **Pengawas** | `pengawas1` | `pengawas1@example.com` | `123456` | `Home`, `Data Penilaian` (Tambah, Ubah, Cetak Word — tanpa Hapus), `Profil`, `Ubah Password` |

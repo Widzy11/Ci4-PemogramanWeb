@@ -9,19 +9,29 @@
         <form action="<?= base_url('crud/create') ?>" method="post" enctype="multipart/form-data">
             <?= csrf_field() ?>
 
-            <!-- Nomor Pegawai -->
+            <!-- Nomor Pegawai dengan Cek Realtime -->
             <div class="mb-3">
                 <label for="nomor_pegawai" class="form-label fw-semibold">Nomor Pegawai</label>
-                <input type="text" 
-                       class="form-control <?= ($validation->hasError('nomor_pegawai')) ? 'is-invalid' : '' ?>" 
-                       id="nomor_pegawai" 
-                       name="nomor_pegawai" 
-                       value="<?= old('nomor_pegawai') ?>" 
-                       placeholder="Contoh: PEG-003" 
-                       autofocus>
-                <div class="invalid-feedback">
-                    <?= $validation->getError('nomor_pegawai') ?>
+                <div class="input-group">
+                    <input type="text" 
+                           class="form-control <?= ($validation->hasError('nomor_pegawai')) ? 'is-invalid' : '' ?>" 
+                           id="nomor_pegawai" 
+                           name="nomor_pegawai" 
+                           value="<?= old('nomor_pegawai') ?>" 
+                           placeholder="Contoh: PEG-003" 
+                           autocomplete="off"
+                           autofocus>
+                    <span class="input-group-text d-none" id="loading-spinner">
+                        <span class="spinner-border spinner-border-sm text-primary" role="status"></span>
+                    </span>
                 </div>
+                <!-- Pesan Notifikasi Realtime -->
+                <div id="pesan-nomor" class="mt-1 small"></div>
+                <?php if ($validation->hasError('nomor_pegawai')) : ?>
+                    <div class="invalid-feedback d-block">
+                        <?= $validation->getError('nomor_pegawai') ?>
+                    </div>
+                <?php endif; ?>
             </div>
 
             <!-- Nama Pegawai -->
@@ -73,9 +83,87 @@
                 <div class="form-text">Maksimal 1MB (JPG, JPEG, PNG). Jika dikosongkan akan menggunakan foto default.</div>
             </div>
 
-            <button type="submit" class="btn btn-primary">Simpan Data</button>
+            <button type="submit" id="btn-simpan" class="btn btn-primary">Simpan Data</button>
             <a href="<?= base_url('crud') ?>" class="btn btn-secondary">Kembali</a>
         </form>
     </div>
 </div>
+
+<!-- Script AJAX Cek Nomor Pegawai Realtime -->
+<script>
+    const inputNomor = document.getElementById('nomor_pegawai');
+    const pesanNomor = document.getElementById('pesan-nomor');
+    const btnSimpan = document.getElementById('btn-simpan');
+    const spinner = document.getElementById('loading-spinner');
+    let timeout = null;
+
+    inputNomor.addEventListener('input', function () {
+        const val = this.value.trim();
+
+        clearTimeout(timeout);
+        if (val === '') {
+            pesanNomor.innerHTML = '';
+            inputNomor.classList.remove('is-invalid', 'is-valid');
+            btnSimpan.disabled = false;
+            if (spinner) spinner.classList.add('d-none');
+            return;
+        }
+
+        if (spinner) spinner.classList.remove('d-none');
+
+        // Debounce 300ms agar menunggu selesai mengetik
+        timeout = setTimeout(() => {
+            fetch('<?= base_url('crud/cekNomorPegawai') ?>', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: 'nomor_pegawai=' + encodeURIComponent(val)
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (spinner) spinner.classList.add('d-none');
+                if (data.status === 'exists') {
+                    inputNomor.classList.remove('is-valid');
+                    inputNomor.classList.add('is-invalid');
+                    pesanNomor.innerHTML = '<span class="text-danger fw-bold">&#10006; ' + data.message + '</span>';
+                    btnSimpan.disabled = true; // Kunci tombol simpan agar tidak terjadi error
+                } else if (data.status === 'available') {
+                    inputNomor.classList.remove('is-invalid');
+                    inputNomor.classList.add('is-valid');
+                    pesanNomor.innerHTML = '<span class="text-success fw-bold">&#10004; ' + data.message + '</span>';
+                    btnSimpan.disabled = false; // Buka kunci tombol simpan
+                }
+            })
+            .catch(() => {
+                if (spinner) spinner.classList.add('d-none');
+            });
+        }, 300);
+    });
+</script>
+<?= $this->endSection() ?>
+
+<?= $this->section('scripts') ?>
+<script>
+    $(document).ready(function () {
+        $('#id_departemen').select2({
+            theme: 'bootstrap-5',
+            placeholder: '-- Pilih / Cari Departemen --',
+            allowClear: true,
+            ajax: {
+                url: '<?= base_url('departemen/search') ?>',
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return { q: params.term || '' };
+                },
+                processResults: function (data) {
+                    return { results: data.results };
+                },
+                cache: true
+            }
+        });
+    });
+</script>
 <?= $this->endSection() ?>

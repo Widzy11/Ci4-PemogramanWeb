@@ -27,7 +27,7 @@ class Departemen extends BaseController
     {
         $data = [
             'title'      => 'Tambah Data Departemen',
-            'validation' => \Config\Services::validation()
+            'validation' => session('validation') ?? \Config\Services::validation()
         ];
 
         return view('departemen/create', $data);
@@ -49,7 +49,7 @@ class Departemen extends BaseController
                 ]
             ]
         ])) {
-            return redirect()->to('/departemen/create')->withInput()->with('validation', \Config\Services::validation());
+            return redirect()->to('/departemen/create')->withInput();
         }
 
         $this->departemenModel->save([
@@ -66,7 +66,7 @@ class Departemen extends BaseController
         $data = [
             'title'      => 'Edit Data Departemen',
             'departemen' => $this->departemenModel->find($id),
-            'validation' => \Config\Services::validation()
+            'validation' => session('validation') ?? \Config\Services::validation()
         ];
 
         return view('departemen/edit', $data);
@@ -88,7 +88,7 @@ class Departemen extends BaseController
                 ]
             ]
         ])) {
-            return redirect()->to('/departemen/edit/' . $id)->withInput()->with('validation', \Config\Services::validation());
+            return redirect()->to('/departemen/edit/' . $id)->withInput();
         }
 
         $this->departemenModel->update($id, [
@@ -105,5 +105,30 @@ class Departemen extends BaseController
         $this->departemenModel->delete($id);
         session()->setFlashdata('pesan', 'Data Departemen berhasil dihapus.');
         return redirect()->to('/departemen');
+    }
+
+    // AJAX Select2 Autocomplete: Cari departemen dari database MySQL
+    public function search()
+    {
+        $keyword = trim($this->request->getGet('q') ?? $this->request->getGet('searchTerm') ?? '');
+
+        $builder = $this->departemenModel;
+        if ($keyword !== '') {
+            $builder = $builder->groupStart()
+                ->like('nama_departemen', $keyword)
+                ->orLike('nama_bagian', $keyword)
+                ->groupEnd();
+        }
+
+        $rows = $builder->orderBy('nama_departemen', 'ASC')->findAll(20);
+        $results = [];
+        foreach ($rows as $row) {
+            $results[] = [
+                'id'   => $row['id_departemen'],
+                'text' => $row['nama_departemen'] . ' - ' . $row['nama_bagian'],
+            ];
+        }
+
+        return $this->response->setJSON(['results' => $results]);
     }
 }
